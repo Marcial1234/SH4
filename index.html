@@ -17,6 +17,8 @@
         <h1>Coursetro Instructor</h1>
 
         <h2 id="instructor"></h2>
+        <img id="loader" src="https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif">
+
 
         <label for="name" class="col-lg-2 control-label">Instructor Name</label>
         <input id="name" type="text">
@@ -38,7 +40,7 @@
             // set the provider you want from Web3.providers
             web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
         }
-        web3.eth.defaultAccount = web3.eth.accounts[0];
+        web3.eth.defaultAccount = web3.eth.accounts[0]; //using acc 0
 
         var CoursetroContract = web3.eth.contract([
 	{
@@ -60,10 +62,27 @@
 		"type": "function"
 	},
 	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "age",
+				"type": "uint256"
+			}
+		],
+		"name": "Instructor",
+		"type": "event"
+	},
+	{
 		"constant": false,
 		"inputs": [
 			{
-				"name": "_fname",
+				"name": "_fName",
 				"type": "string"
 			},
 			{
@@ -78,21 +97,30 @@
 		"type": "function"
 	}
 ])
-    var Coursetro = CoursetroContract.at('0xe9007e73cdd6ab01e3fb9037dbffbaf02d2d665f');
+    var Coursetro = CoursetroContract.at('0x3123650c961e0a16e89f1a3f2ff5254e2f99a37e');
         console.log(Coursetro);
 
-        Coursetro.getInstructor(function(error, result){
-            if(!error)
+        var instructorEvent = Coursetro.Instructor();
+
+        instructorEvent.watch(function(error, result){
+            if (!error)
                 {
-                    $("#instructor").html(result[0]+' ('+result[1]+' years old)');
-                    console.log(result);
+                    $("#loader").hide();
+                    $("#instructor").html(result.args.name + ' (' + result.args.age + ' years old)');
+                } else {
+                    $("#loader").hide();
+                    
                 }
-            else
-                console.error(error);
         });
 
         $("#button").click(function() {
-            Coursetro.setInstructor($("#name").val(), $("#age").val());
+            $("#loader").show();
+		Coursetro.setInstructor($("#name").val(), $("#age").val(), (err, res) => {
+   		 if (err) {
+        $("#loader").hide();
+        console.log('oh no');
+    }
+});
         });
 
 

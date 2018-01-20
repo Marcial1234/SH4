@@ -1,19 +1,37 @@
 pragma solidity ^0.4.18;
 
-contract Coursetro{
-    
+contract Coursetro {
     
     string fName;
     uint age;
-    
-    function setInstructor(string _fname, uint _age) public{
-      fName = _fname;
-      age = _age;
+    address owner; //address
+
+    function Coursetro() public { //constructor
+        owner = msg.sender; //owner is msg sender
+    }
+
+    modifier onlyOwner { //function modifier
+        require(msg.sender == owner);
+        _; //if condition true then run function body
+        //to use modifier place on function
     }
     
-    function getInstructor() public constant returns (string, uint){
-        return (fName, age);
+    event Instructor(
+       string name,
+       uint age
+    );
+    
+    function setInstructor(string _fName, uint _age) onlyOwner public {
+       fName = _fName;
+       age = _age;
+       Instructor(_fName, _age);
     }
+    
+    function getInstructor() view public returns (string, uint) {
+       return (fName, age);
+    }
+    
+    
     
     //bool t or f
     //int + and -

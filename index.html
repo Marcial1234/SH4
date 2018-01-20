@@ -95,9 +95,15 @@
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
 	}
 ])
-    var Coursetro = CoursetroContract.at('0x3123650c961e0a16e89f1a3f2ff5254e2f99a37e');
+    var Coursetro = CoursetroContract.at('0xec7624f3822da242d7ba8f748389a61566bcc91e');
         console.log(Coursetro);
 
         var instructorEvent = Coursetro.Instructor();
@@ -115,7 +121,7 @@
 
         $("#button").click(function() {
             $("#loader").show();
-		Coursetro.setInstructor($("#name").val(), $("#age").val(), (err, res) => {
+			Coursetro.setInstructor($("#name").val(), $("#age").val(), (err, res) => {
    		 if (err) {
         $("#loader").hide();
         console.log('oh no');
